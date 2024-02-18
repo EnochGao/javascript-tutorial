@@ -159,7 +159,9 @@ obj.p3 // "123abc"
 
 上面代码中，`Object.defineProperties()`同时定义了`obj`对象的三个属性。其中，`p3`属性定义了取值函数`get`，即每次读取该属性，都会调用这个取值函数。
 
-注意，一旦定义了取值函数`get`（或存值函数`set`），就不能将`writable`属性设为`true`，或者同时定义`value`属性，否则会报错。
+注意，对象中存在的属性描述符有两种主要类型：数据描述符和访问器描述符。描述符只能是这两种类型之一，不能同时为两者。
+
+一旦定义了取值函数`get`（或存值函数`set`），就不能同时定义数据描述符属性，否则会报错。
 
 ```javascript
 var obj = {};
@@ -172,7 +174,7 @@ Object.defineProperty(obj, 'p', {
 // A property cannot both have accessors and be writable or have a value
 
 Object.defineProperty(obj, 'p', {
-  writable: true,
+  writable: true,// 无论 true、false，都会报错
   get: function() { return 456; }
 });
 // TypeError: Invalid property descriptor.
@@ -302,7 +304,7 @@ obj.foo // "b"
 
 ### enumerable
 
-`enumerable`（可遍历性）返回一个布尔值，表示目标属性是否可遍历。
+`enumerable`（可遍历性）是一个布尔值，表示目标属性是否可遍历。
 
 JavaScript 的早期版本，`for...in`循环是基于`in`运算符的。我们知道，`in`运算符不管某个属性是对象自身的还是继承的，都会返回`true`。
 
@@ -350,7 +352,7 @@ JSON.stringify(obj) // "{}"
 
 ### configurable
 
-`configurable`(可配置性）返回一个布尔值，决定了是否可以修改属性描述对象。也就是说，`configurable`为`false`时，`writable`、`enumerable`和`configurable`都不能被修改了。
+`configurable`(可配置性）是一个布尔值，决定了是否可以修改属性描述对象。也就是说，`configurable`为`false`时，`writable`、`enumerable`和`configurable`都不能被修改了。
 
 ```javascript
 var obj = Object.defineProperty({}, 'p', {
